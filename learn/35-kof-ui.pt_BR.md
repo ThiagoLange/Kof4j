@@ -161,6 +161,7 @@ i.remove()
 ```kof
 var col = Column(listOf(l1, l2))    // empilha verticalmente
 var row = Row(listOf(l1, l2))       // alinha horizontalmente
+var sc = Scroll(listOf(l1, l2))     // container rolável (overflow:auto)
 
 var style = Style(Palette.black, Palette.white, 16, 8)
 var view = View(style)              // caixa com fundo/padding/raio

@@ -364,6 +364,10 @@ public final class JvmRuntimeUi {
                     return 1;
                 }
 
+                public static int kof_ui_scroll_new(java.util.ArrayList ids) {
+                    return 1;
+                }
+
                 public static int kof_ui_widget_font(int widget) {
                     return -1;
                 }

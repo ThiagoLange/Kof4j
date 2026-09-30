@@ -310,6 +310,41 @@ class ComponentCoreE2ETest extends ComponentCoreSupport {
     }
 
     @Test
+    void scrollRendersScrollableContainer(@TempDir Path tempDir) throws IOException {
+        // #702 (docs/ui/architecture.md §2.8): Scroll(children) is a CSS-first
+        // scrollable container (overflow:auto); JVM/Native run it as a no-op.
+        String program = """
+            main() {
+                var l1 = Label("a")
+                var l2 = Label("b")
+                var sc = Scroll(listOf(l1, l2))
+                var win = Window("App")
+                win.bind(sc)
+                win.show()
+            }
+            """;
+        Path scrollSrc = tempDir.resolve("scroll.kf");
+        Files.writeString(scrollSrc, program);
+        runJvm(scrollSrc, tempDir.resolve("jvm-scroll"), "");
+        runNative(scrollSrc, tempDir.resolve("native-scroll"), "");
+        Path jsSource = tempDir.resolve("scroll-js.kf");
+        Files.writeString(jsSource, program);
+        CompilationResult js = driver.compile(jsSource, tempDir.resolve("js-scroll"), Target.JS);
+        assertTrue(js.success(), "JS compilation should succeed: " + js.diagnostics().getDiagnostics());
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        String html = dev.kof.runtime.KofJsRunner.runCaptureHtml(
+                tempDir.resolve("js-scroll").resolve("Default.mjs"), out,
+                new java.io.ByteArrayInputStream(new byte[0]), out);
+        assertNotNull(html, "The window should serialize to HTML");
+        assertTrue(html.contains("kof-scroll"), "Scroll must render as a CSS container: " + html);
+        assertTrue(html.contains(">a</span>") && html.contains(">b</span>"),
+                "Scroll must contain its children: " + html);
+        // NOTE: overflow:auto is a runtime inline style (node.style), applied
+        // in the live DOM — the static serializer carries classes only. The
+        // live overflow is proven in KofJsBrowserE2ETest.
+    }
+
+    @Test
     void eventsBubbleUpTheComponentTree(@TempDir Path tempDir) throws IOException {
         // Fase 5 (docs/ui/architecture.md §2.5): emit(child) -> child handler
         // -> bubbles to parent. emit(parent) reaches only the parent.

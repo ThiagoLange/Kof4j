@@ -15,6 +15,9 @@
 > Style, Window, Link, Image, Icon, Font, Component, Event, the layout set
 > (Box, Stack, Spacer, Wrap, Grid, Center, Align) and Store, Canvas, Fieldset,
 > Iframe, Video, Audio, Hr. The `UI00x` matrix and R6 convention remain valid.
+> **Recount 30/09 (#702):** `isUiType` covers **37 types** — the layout set
+> gains `Scroll` (`Scroll(children)` → `div.kof-scroll`, `overflow:auto`;
+> 6-point recipe, proof `scrollRendersScrollableContainer` + live-Chrome).
 > **`UI001/UI002` recount (17/09):** `UI002` ✅ confirmed DONE 08/09 (the
 > interpreter prints the warning once via `ui002Warned`).
 > **`UI001` recount (29/09):** ✅ **DONE** — #683. `kof.ui` on Native is no
@@ -58,7 +61,8 @@ Grid, Center, Align, Store, Canvas + namespace `Router`.
 ## 3. KofJS — what the real DOM covers today
 
 - **Elements → tags:** Label→span, Button→button, Input→input[type=text],
-  Column/Row/View→div, Link→a, Image→img, Icon→span, Style→style,
+  Column/Row/View→div, Scroll→div.kof-scroll (overflow:auto),
+  Link→a, Image→img, Icon→span, Style→style,
   Canvas→canvas. (Widgets: `JsRuntimeUiWidgets.java` 42/153/198/232/249/277.)
 - **Events:** `Component.on(type, handler)` → `KOF_UI_EV` (15: click, dblclick,
   mousedown/up, mousemove/enter/leave, wheel, keydown/up, focus, blur, input,

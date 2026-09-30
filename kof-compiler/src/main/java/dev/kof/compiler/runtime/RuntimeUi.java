@@ -410,6 +410,9 @@ public final class RuntimeUi {
             kof_ui_align_new:
                 movl $1, %eax
                 ret
+            kof_ui_scroll_new:
+                movl $1, %eax
+                ret
             // ── Component Core (docs/ui/architecture.md) ──
             kof_ui_component_new:
                 movl $1, %eax

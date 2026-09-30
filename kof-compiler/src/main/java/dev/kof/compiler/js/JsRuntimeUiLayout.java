@@ -68,6 +68,13 @@ public final class JsRuntimeUiLayout {
                         { display: "flex", justifyContent: justify, alignItems: align });
             }
 
+            export function kofUiScrollNew(ids) {
+                // scrollable container: the framework never computes pixels;
+                // overflow:auto gives both axes scrollbars only when needed.
+                return kofUiLayoutContainerNew("div", "kof-scroll", ids,
+                        { overflow: "auto" });
+            }
+
             export function kofUiViewRemove(view) {
                 if (typeof document !== "undefined" && window.__kofNodes && window.__kofNodes[view]) {
                     const node = window.__kofNodes[view];

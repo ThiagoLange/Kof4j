@@ -161,6 +161,7 @@ i.remove()
 ```kof
 var col = Column(listOf(l1, l2))    // stacks vertically
 var row = Row(listOf(l1, l2))       // aligns horizontally
+var sc = Scroll(listOf(l1, l2))     // scrollable container (overflow:auto)
 
 var style = Style(Palette.black, Palette.white, 16, 8)
 var view = View(style)              // box with background/padding/radius

@@ -689,6 +689,41 @@ class KofJsBrowserE2ETest {
     }
 
     @Test
+    void scrollRendersScrollableContainerInRealBrowser(@TempDir Path tempDir) throws IOException {
+        Browser browser = findBrowser();
+        assumeTrue(browser != null, "nenhum browser real (Chrome/Chromium/Safari) — pulando E2E de browser");
+
+        String program = """
+            main() {
+                var l1 = Label("a")
+                var l2 = Label("b")
+                var sc = Scroll(listOf(l1, l2))
+                var w = Window("ScrollTest")
+                w.bind(sc)
+                w.show()
+            }
+            """;
+        Path source = tempDir.resolve("App.kf");
+        Files.writeString(source, program);
+
+        Path outDir = tempDir.resolve("out");
+        CompilationResult result = driver.compile(source, outDir, Target.JS);
+        assertTrue(result.success(), "compilação JS deve passar: " + result.diagnostics().getDiagnostics());
+
+        HttpServer server = serve(outDir);
+        int port = server.getAddress().getPort();
+        try {
+            String dom = browser.dump("http://127.0.0.1:" + port + "/index.html");
+            assertTrue(dom.contains("kof-scroll"), "classe kof-scroll ausente no DOM: " + excerpt(dom));
+            assertTrue(dom.contains("overflow"), "overflow:auto ausente no DOM ao vivo: " + excerpt(dom));
+            assertTrue(dom.contains(">a</span>") && dom.contains(">b</span>"),
+                    "filhos ausentes no <div> de scroll: " + excerpt(dom));
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
     void iframeRendersInRealBrowserDom(@TempDir Path tempDir) throws IOException {
         Browser browser = findBrowser();
         assumeTrue(browser != null, "nenhum browser real (Chrome/Chromium/Safari) — pulando E2E de browser");
